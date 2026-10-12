@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wedding Planner Demo</title>
+<style>
+:root{
+  --cream:#fbf6f1; --ivory:#fffdfa; --sand:#f4ebe3; --ink:#3a2a31; --muted:#8c7a80;
+  --rose:#b86f78; --rose-soft:#f6e4e4; --gold:#c9a25f; --gold-soft:#f8f0de;
+  --sage:#6f8f79; --amber:#d9963a; --red:#b44b4b; --line:#eee2da;
+  --serif: Georgia, "Times New Roman", serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--cream);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+.side{background:var(--sand);padding:22px 14px;display:flex;flex-direction:column;gap:18px;position:sticky;top:0;height:100vh}
+.brand{padding:0 10px}
+.brand strong{display:block;font:600 1.2rem var(--serif);color:var(--rose)}
+.brand span{font-size:.85rem;color:var(--muted)}
+.nav{display:flex;flex-direction:column;gap:4px}
+.nav-btn{border:none;background:none;text-align:left;cursor:pointer;padding:10px 12px;border-radius:10px;color:var(--ink);font:inherit}
+.nav-btn:hover{background:rgba(255,255,255,.5)}
+.nav-btn.active{background:var(--ivory);box-shadow:inset 3px 0 0 var(--rose);font-weight:600}
+.side-foot{margin-top:auto;font-size:.8rem;color:var(--muted);padding:0 10px}
+.content{padding:22px 28px 60px;min-width:0}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:18px}
+.eyebrow{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.top h1{font:400 2rem var(--serif);margin:0}
+.top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.badge{font-size:.78rem;padding:4px 10px;border-radius:999px;background:var(--gold-soft);color:#7a5a20}
+.badge:empty{display:none}
+.page-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+.page-head p{margin:0}
+.card{background:var(--ivory);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px}
+.card h3{font:400 1.15rem var(--serif);margin:0 0 10px}
+.muted{color:var(--muted)}
+.small{font-size:.82rem}
+.big{font:400 2.2rem var(--serif)}
+.hero{background:linear-gradient(135deg,#4a3640,#6b4d57);color:#fbf1ea;border-radius:16px;padding:24px;margin-bottom:16px}
+.hero .eyebrow{color:#e5c9c4}
+.hero-num{font:400 3.4rem/1 var(--serif);margin:6px 0}
+.hero-num.neg{color:#ffb3b3}
+.hero-sub{color:#e5d3cd}
+.hero-warn{margin-top:10px;background:rgba(255,255,255,.12);padding:8px 12px;border-radius:10px;font-size:.9rem}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+.stat{background:var(--ivory);border:1px solid var(--line);border-radius:12px;padding:14px}
+.stat .label{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.stat .value{font:400 1.5rem var(--serif);margin-top:4px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.neg{color:var(--red)!important}
+.next-text{font:400 1.3rem var(--serif);margin:4px 0 10px}
+.task-row{display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.task-row:last-child{border-bottom:none}
+.task-row input{width:18px;height:18px;margin:0;flex:none}
+.task-row span{color:var(--ink);font-size:.95rem}
+.app>*{min-width:0}
+.quick{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chip{border:1px solid var(--line);background:var(--gold-soft);border-radius:999px;padding:8px 14px;cursor:pointer;font:inherit;color:var(--ink)}
+.chip:hover{background:#f2e6c8}
+.row-inline{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+.row-inline input,.row-inline select{flex:1 1 150px;min-width:120px}
+input,select{font:inherit;padding:8px 10px;border:1px solid #ddcfc6;border-radius:9px;background:#fff;color:var(--ink);max-width:100%}
+input:focus,select:focus{outline:2px solid #e8c4c6;border-color:var(--rose)}
+label{display:block;font-size:.84rem;color:var(--muted)}
+label input{margin-top:4px;width:100%}
+.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.check{display:flex;gap:8px;align-items:center;color:var(--ink)}
+.check input{width:18px;height:18px;margin:0;flex:none}
+button{font:inherit;cursor:pointer}
+button.primary{background:var(--rose);color:#fff;border:1px solid var(--rose);padding:8px 16px;border-radius:9px}
+button.primary:hover{filter:brightness(.95)}
+button.ghost{background:var(--ivory);color:var(--ink);border:1px solid #ddcfc6;padding:8px 14px;border-radius:9px}
+button.danger{background:var(--ivory);color:#9c3a3a;border:1px solid #e6c3c3;padding:8px 14px;border-radius:9px}
+button.x{border:none;background:none;color:var(--muted);padding:4px 6px;font-size:.95rem}
+button.x:hover{color:var(--red)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.list-row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.list-row:last-child{border-bottom:none}
+.tag{display:inline-block;font-size:.72rem;padding:2px 8px;border-radius:999px;background:var(--sand);color:var(--muted);margin-left:6px;vertical-align:middle}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:9px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+th{font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:500}
+td input,td select{padding:6px 8px;width:100%}
+td input[type=checkbox]{width:auto}
+td input[type=number]{width:110px}
+.bar{height:9px;background:#efe5df;border-radius:99px;overflow:hidden;margin-top:4px}
+.bar>span{display:block;height:100%;background:var(--sage);border-radius:99px;transition:width .3s}
+.bar.amber>span{background:var(--amber)}
+.bar.red>span{background:var(--red)}
+.task-line{display:grid;grid-template-columns:24px minmax(0,1fr) 150px 30px;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line)}
+.task-line input[type=checkbox]{width:18px;height:18px;margin:0}
+.task-text{border:none!important;background:transparent!important;padding:4px!important}
+.task-text.done{text-decoration:line-through;color:var(--muted)}
+.passed{opacity:.55}
+.help-btn{margin-left:6px;width:22px;height:22px;border-radius:50%;border:1px solid var(--rose);background:var(--ivory);color:var(--rose);font-size:.8rem;padding:0;vertical-align:middle}
+.help-panel{background:var(--gold-soft);border-left:3px solid var(--gold);padding:12px 14px;border-radius:10px;margin:0 0 16px;font-size:.92rem}
+.banner{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:var(--rose-soft);border:1px solid #efcfd1;border-radius:12px;padding:12px 16px;margin-bottom:16px}
+.flash{animation:flash 1.8s ease-out}
+@keyframes flash{from{background:#f3d9a8}to{background:transparent}}
+.modal{position:fixed;inset:0;background:rgba(40,25,30,.35);display:flex;justify-content:center;align-items:flex-start;padding-top:12vh;z-index:20}
+.modal.hidden{display:none}
+.sheet{background:var(--ivory);border-radius:16px;width:min(560px,92vw);padding:16px;box-shadow:0 20px 50px rgba(0,0,0,.2)}
+.sheet input{width:100%;font-size:1.05rem;padding:12px 14px}
+.res{display:flex;justify-content:space-between;gap:12px;width:100%;text-align:left;border:none;background:none;padding:10px 8px;border-radius:8px;margin-top:4px}
+.res:hover,.res:focus{background:var(--rose-soft);outline:none}
+#sres{max-height:50vh;overflow:auto;margin-top:8px}
+kbd{font:inherit;font-size:.78rem;border:1px solid #ddcfc6;border-radius:6px;padding:1px 6px;background:#fff}
+.hidden{display:none!important}
+
+/* ---------- charts ---------- */
+:root{
+  --c1:#c2577a; --c2:#3b7dc4; --c3:#b07d12; --c4:#8a55b8; --c-other:#b9aca6;
+  --track:#f1e8e2; --grid:#eee2da; --ok:#5e8f6e;
+}
+.hero-num,.stat .value,.big,.ring-num,.donut-num{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif!important;font-weight:600}
+.hero-num{font-size:3.2rem;letter-spacing:-.02em}
+.stat .value{font-size:1.45rem}
+.charts{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:16px}
+.charts .card{margin-bottom:0}
+.chart-title{font:400 1.05rem var(--serif);margin:0 0 2px}
+.chart-sub{font-size:.8rem;color:var(--muted);margin:0 0 14px}
+/* ring meters */
+.rings{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+.ring{display:flex;align-items:center;gap:12px;padding:6px 4px;border-radius:12px;cursor:default;outline:none}
+.ring:focus-visible{box-shadow:0 0 0 2px var(--rose)}
+.ring svg{flex:none}
+.ring-num{font-size:20px;fill:var(--ink)}
+.ring-label{font-size:.9rem;color:var(--ink)}
+.ring-sub{font-size:.78rem;color:var(--muted)}
+/* donut */
+.donut-wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.donut-wrap svg{flex:none}
+.donut-seg{transition:opacity .15s;cursor:default;outline:none}
+.donut-wrap:hover .donut-seg{opacity:.45}
+.donut-wrap .donut-seg:hover,.donut-wrap .donut-seg:focus{opacity:1}
+.donut-num{font-size:22px;fill:var(--ink)}
+.donut-num,.donut-cap,.ring-num,.tl-label,.tl-tick{pointer-events:none}
+.donut-cap{font-size:11px;fill:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.legend{list-style:none;margin:0;padding:0;flex:1;min-width:150px}
+.legend li{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:.86rem;border-bottom:1px solid var(--line)}
+.legend li:last-child{border-bottom:none}
+.sw{width:10px;height:10px;border-radius:3px;flex:none}
+.legend .lv{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--ink)}
+.legend .lp{width:40px;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums;font-size:.8rem}
+/* horizontal bars */
+.hb{display:grid;grid-template-columns:minmax(80px,max-content) 1fr;column-gap:12px;row-gap:9px;align-items:center}
+.hb-label{font-size:.85rem;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px}
+.hb-row{display:contents}
+.hb-bar{display:flex;align-items:center;gap:8px;min-width:0;cursor:default;outline:none;border-radius:4px}
+.hb-bar:focus-visible{box-shadow:0 0 0 2px var(--rose)}
+.hb-track{flex:1;height:12px;position:relative;min-width:0}
+.hb-track.meter{background:var(--track);border-radius:0 4px 4px 0}
+.hb-fill{position:absolute;left:0;top:0;bottom:0;border-radius:0 4px 4px 0;min-width:2px;transition:width .3s}
+.hb-val{font-size:.8rem;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap;min-width:52px;text-align:right}
+.hb-bar:hover .hb-fill{filter:brightness(.92)}
+/* stacked bar */
+.stack{display:flex;gap:2px;height:14px;margin:4px 0 12px}
+.stack span{height:100%;cursor:default;outline:none}
+.stack span:first-child{border-radius:4px 0 0 4px}
+.stack span:last-child{border-radius:0 4px 4px 0}
+.stack span:only-child{border-radius:4px}
+.stack span:hover,.stack span:focus{filter:brightness(.9)}
+.inline-legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.82rem;color:var(--ink)}
+.inline-legend span{display:inline-flex;align-items:center;gap:6px}
+.inline-legend b{font-weight:600;font-variant-numeric:tabular-nums}
+/* timeline */
+.timeline svg{display:block;width:100%;height:auto;overflow:visible}
+.tl-dot{cursor:default;outline:none}
+.tl-dot:hover circle.m,.tl-dot:focus circle.m{r:8}
+.tl-axis{stroke:var(--grid);stroke-width:1}
+.tl-tick{font-size:11px;fill:var(--muted)}
+.tl-label{font-size:12px;fill:var(--ink)}
+.tl-label.muted{fill:var(--muted)}
+.empty-chart{color:var(--muted);font-size:.88rem;padding:18px 0}
+/* tooltip */
+#tip{position:fixed;z-index:50;pointer-events:none;background:#3a2a31;color:#fff8f2;font-size:.82rem;line-height:1.35;padding:7px 10px;border-radius:8px;box-shadow:0 6px 18px rgba(0,0,0,.18);opacity:0;transition:opacity .12s;max-width:240px}
+#tip.on{opacity:1}
+#tip b{font-weight:600}
+@media (max-width:820px){
+  .app{grid-template-columns:1fr}
+  .side{position:static;height:auto;flex-direction:column;gap:10px}
+  .nav{flex-direction:row;overflow-x:auto}
+  .nav-btn{white-space:nowrap}
+  .two-col{grid-template-columns:1fr}
+  .grid3{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .grid4{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .stat{padding:10px}
+  .stat .label{font-size:.64rem}
+  .stat .value{font-size:1.1rem}
+  .charts{grid-template-columns:1fr}
+  .timeline{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:0 -4px;padding:0 4px}
+  .timeline svg{min-width:620px}
+  .rings{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .ring{flex-direction:column;align-items:flex-start;gap:6px}
+  .hero-num{font-size:2.6rem}
+  .task-line{grid-template-columns:22px minmax(0,1fr) 118px 26px;gap:6px}
+  .task-line input{min-width:0;width:100%}
+  .task-line input[type=date]{font-size:.8rem;padding:5px 4px}
+}
+</style>
+</head>
+<body>
+
+<div class="app">
+  <aside class="side">
+    <div class="brand"><strong>Wedding Planner</strong><span id="brandSub">Your wedding</span></div>
+    <nav class="nav" id="nav"></nav>
+    <div class="side-foot" id="sideFoot"></div>
+  </aside>
+
+  <div class="content">
+    <div class="top">
+      <div>
+        <div class="eyebrow" id="dateLine"></div>
+        <h1 id="pageTitle">Today</h1>
+      </div>
+      <div class="top-actions">
+        <button class="ghost" data-action="search">Search <kbd>Ctrl K</kbd></button>
+        <button class="ghost" data-action="toggle-help" id="helpBtn">Help</button>
+        <span class="badge" id="modeBadge"></span>
+      </div>
+    </div>
+    <div id="banner"></div>
+    <main id="main"></main>
+  </div>
+</div>
+
+<div id="modal" class="modal hidden"></div>
+<div id="tip" role="status" aria-live="polite"></div>
+<input type="file" id="importFile" accept="application/json" hidden>
+
+<script>
+(function(){
+"use strict";
+
+/* Build-time switch: true = demo (nothing saved), false = full purchased version */
+var DEMO = true;
+var KEY = "wedding-planner-v2";
+
+var SCREENS = [
+  {id:"today", label:"Today"},
+  {id:"planner", label:"Planner"},
+  {id:"budget", label:"Budget"},
+  {id:"guests", label:"Guests"},
+  {id:"vendors", label:"Vendors"},
+  {id:"checklist", label:"Checklist"},
+  {id:"settings", label:"Settings"}
+];
+
+var HELP = {
+  today: "Today shows how much you can still spend, the next thing to do, and buttons to log money as it goes out. Anything you log here lowers the big number.",
+  planner: "Your wedding calendar. Important dates and task deadlines appear together in date order. Add an event for things like tastings, fittings or deposit deadlines.",
+  budget: "Plan is what you expect to spend in each category. Actual is what you have paid or committed. Each bar fills as you spend: amber at 80%, red when you go over.",
+  guests: "Everyone you are inviting. Set each RSVP to Attending, Declined or Awaiting reply. The seats figure counts plus-ones for guests who said yes.",
+  vendors: "Every supplier in one place: their price, whether a deposit is paid, and whether the contract is signed.",
+  checklist: "Tasks from a year out to the big day, in order. Tick a task when it is done. Tasks with a due date also show on the Planner.",
+  settings: "Your wedding details, the four quick-spend buttons on Today, and your backup options. Changes save as you go."
+};
+
+var DEFAULT_BUDGET = ["Venue","Catering","Bar","Photography","Videography","Music","Flowers & decor","Attire","Hair & makeup","Invitations","Cake","Rentals & transport","Officiant","Rings","Honeymoon","Contingency"];
+
+var DEFAULT_TASKS = [
+  ["12+ months before","Set date and total budget"],
+  ["12+ months before","Draft the first guest list"],
+  ["12+ months before","Book venue and officiant"],
+  ["12+ months before","Choose the wedding party"],
+  ["9–12 months before","Hire photographer and videographer"],
+  ["9–12 months before","Book caterer and bar service"],
+  ["9–12 months before","Start looking at dresses and suits"],
+  ["9–12 months before","Check legal paperwork and marriage licence"],
+  ["6–9 months before","Book music or DJ"],
+  ["6–9 months before","Book florist and decor"],
+  ["6–9 months before","Reserve a hotel block for guests"],
+  ["6–9 months before","Order attire and book fittings"],
+  ["4–6 months before","Send save-the-dates"],
+  ["4–6 months before","Book hair and makeup trial"],
+  ["4–6 months before","Order invitations and stationery"],
+  ["4–6 months before","Plan the honeymoon"],
+  ["2–3 months before","Send invitations"],
+  ["2–3 months before","Choose menu and cake flavours"],
+  ["2–3 months before","Plan the ceremony order"],
+  ["1 month before","Follow up on RSVPs"],
+  ["1 month before","Send final guest count to caterer"],
+  ["1 month before","Write vows and speeches"],
+  ["1–2 weeks before","Confirm every vendor and their timing"],
+  ["1–2 weeks before","Share the day-of timeline with the wedding party"],
+  ["1–2 weeks before","Prepare seating chart and place cards"],
+  ["1 week before","Pick up attire and do final fittings"],
+  ["Wedding week","Pay remaining vendor balances and keep receipts"],
+  ["After the wedding","Send thank-you notes"]
+];
+
+/* ---------- helpers ---------- */
+function uid(){ return Math.random().toString(36).slice(2,9) + Date.now().toString(36); }
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+function num(v){ var n=parseFloat(v); return isNaN(n)?0:n; }
+function money(n){ var v=Math.round(Number(n)||0); var s="$"+Math.abs(v).toLocaleString("en-US"); return v<0?"-"+s:s; }
+function todayStr(){
+  var d=new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function daysUntil(s){ return Math.ceil((new Date(s+"T00:00:00")-new Date(todayStr()+"T00:00:00"))/86400000); }
+function niceDate(s){ if(!s) return ""; return new Date(s+"T00:00:00").toLocaleDateString("en-US",{month:"short",day:"numeric",year:"numeric"}); }
+function val(id){ var el=document.getElementById(id); return el?el.value:""; }
+function findItem(coll,id){ return state[coll].find(function(x){ return x.id===id; }); }
+function sel(coll,id,field,opts,cur){
+  return '<select data-coll="'+coll+'" data-id="'+id+'" data-field="'+field+'">'+opts.map(function(o){
+    var v=Array.isArray(o)?o[0]:o, l=Array.isArray(o)?o[1]:o;
+    return '<option value="'+esc(v)+'"'+(String(v)===String(cur)?' selected':'')+'>'+esc(l)+'</option>';
+  }).join("")+'</select>';
+}
+
+/* ---------- data ---------- */
+function blankState(){
+  return {
+    mode:"mine",
+    settings:{p1:"",p2:"",wdate:"",venue:"",totalBudget:0,guestTarget:0,presets:[20,50,100,200],helpOn:true},
+    budget:DEFAULT_BUDGET.map(function(n){ return {id:uid(),name:n,estimate:0,actual:0}; }),
+    tasks:DEFAULT_TASKS.map(function(t){ return {id:uid(),phase:t[0],text:t[1],due:"",done:false}; }),
+    spends:[], guests:[], vendors:[], events:[]
+  };
+}
+
+function exampleState(){
+  var s=blankState();
+  s.mode="example";
+  s.settings={p1:"Maya",p2:"Daniel",wdate:"2027-06-12",venue:"Willow Creek Estate",totalBudget:31500,guestTarget:120,presets:[20,50,100,200],helpOn:true};
+
+  var plan=[["Venue",6500,6500],["Catering",8500,3000],["Bar",2000,0],["Photography",3200,3200],["Flowers & decor",2800,1400],["Attire",2400,1100],["Music",1600,800],["Invitations",600,450],["Cake",700,0],["Officiant",350,350],["Hair & makeup",900,0],["Rentals & transport",800,0],["Contingency",1150,0]];
+  s.budget=plan.map(function(r){ return {id:uid(),name:r[0],estimate:r[1],actual:r[2]}; });
+
+  s.tasks.forEach(function(t,i){ t.done = i<6; });
+
+  s.spends=[
+    {id:uid(),amount:180,label:"Florist tasting",date:"2026-10-02"},
+    {id:uid(),amount:96,label:"Save-the-date stamps",date:"2026-10-07"}
+  ];
+
+  var guests=[
+    ["Ava Thompson","Partner A",true,"yes","Chicken","4"],
+    ["Liam Patel","Partner B",false,"yes","Vegetarian","4"],
+    ["Chloe Martin","Both",true,"yes","Fish","2"],
+    ["Noah Brown","Partner B",false,"yes","Chicken","7"],
+    ["Grace Kim","Partner A",true,"yes","Chicken","2"],
+    ["Ethan Walker","Partner A",false,"yes","Beef","7"],
+    ["Sofia Rossi","Partner B",true,"yes","Vegetarian","1"],
+    ["Jack Nguyen","Partner A",false,"yes","Chicken","1"],
+    ["Emma Davis","Both",true,"yes","Chicken","3"],
+    ["Lucas Moreau","Partner B",false,"yes","Fish","3"],
+    ["Mia Johnson","Partner A",false,"yes","Chicken","5"],
+    ["Owen Clarke","Partner B",true,"yes","Beef","5"],
+    ["Caleb Wright","Partner A",false,"no","","" ],
+    ["Hannah Lee","Partner B",false,"no","","" ],
+    ["Felix Grant","Partner A",true,"no","","" ],
+    ["Zara Ahmed","Partner B",true,"pending","","" ],
+    ["Mason Lopez","Both",false,"pending","","" ],
+    ["Ruby Adams","Partner A",false,"pending","","" ],
+    ["Isaac Turner","Partner B",false,"pending","","" ],
+    ["Nora Bennett","Both",true,"pending","","" ]
+  ];
+  s.guests=guests.map(function(g){
+    return {id:uid(),name:g[0],side:g[1],plus:g[2],rsvp:g[3],meal:g[4],table:g[5],contact:""};
+  });
+
+  s.vendors=[
+    {id:uid(),name:"Willow Creek Estate",cat:"Venue",cost:6500,deposit:true,contract:true,contact:"events@willowcreek.example"},
+    {id:uid(),name:"Golden Hour Photo",cat:"Photography",cost:3200,deposit:true,contract:true,contact:"hello@goldenhour.example"},
+    {id:uid(),name:"Bella Cucina Catering",cat:"Catering",cost:8500,deposit:true,contract:false,contact:"book@bellacucina.example"},
+    {id:uid(),name:"The Velvet Strings",cat:"Music",cost:1600,deposit:true,contract:true,contact:"gigs@velvetstrings.example"},
+    {id:uid(),name:"Blossom & Vine Florals",cat:"Flowers",cost:2800,deposit:false,contract:false,contact:"studio@blossomvine.example"},
+    {id:uid(),name:"Sweet Layers Bakery",cat:"Cake",cost:700,deposit:false,contract:false,contact:"orders@sweetlayers.example"}
+  ];
+
+  s.events=[
+    {id:uid(),date:"2026-11-01",label:"Venue deposit due"},
+    {id:uid(),date:"2026-12-15",label:"Save-the-dates go out"},
+    {id:uid(),date:"2027-03-20",label:"Final dress fitting"},
+    {id:uid(),date:"2027-05-12",label:"RSVP deadline"}
+  ];
+  return s;
+}
+
+function load(){
+  try{
+    var raw=localStorage.getItem(KEY);
+    if(raw) return Object.assign(exampleState(), JSON.parse(raw));
+  }catch(e){}
+  return exampleState();
+}
+
+function persist(){
+  if(DEMO) return;
+  try{ localStorage.setItem(KEY, JSON.stringify(state)); }
+  catch(e){ alert("This browser isn't saving right now. Download a backup from Settings to keep your work."); }
+}
+
+function resetTo(next){
+  next.settings.presets = state.settings.presets;
+  next.settings.helpOn = state.settings.helpOn;
+  state = next;
+  ui.openHelp = null;
+  persist();
+  render();
+}
+
+/* ---------- money maths ---------- */
+function totals(){
+  var est=0, act=0, extra=0;
+  state.budget.forEach(function(r){ est+=num(r.estimate); act+=num(r.actual); });
+  state.spends.forEach(function(s){ extra+=num(s.amount); });
+  var budget = state.settings.totalBudget || est;
+  var spent = act + extra;
+  return {budget:budget, est:est, spent:spent, remaining:budget-spent};
+}
+
+function openTasks(){
+  return state.tasks
+    .map(function(t,i){ return {t:t,i:i}; })
+    .filter(function(x){ return !x.t.done; })
+    .sort(function(a,b){
+      if(a.t.due && b.t.due) return a.t.due<b.t.due?-1:a.t.due>b.t.due?1:a.i-b.i;
+      if(a.t.due) return -1;
+      if(b.t.due) return 1;
+      return a.i-b.i;
+    })
+    .map(function(x){ return x.t; });
+}
+
+function addSpend(amount,label){
+  state.spends.push({id:uid(),amount:amount,label:label,date:todayStr()});
+  persist(); render();
+}
+
+function setDone(id,done){
+  var t=findItem("tasks",id);
+  if(t){ t.done=done; persist(); render(); }
+}
+
+function removeItem(coll,id){
+  if(!confirm("Remove this item?")) return;
+  state[coll]=state[coll].filter(function(x){ return x.id!==id; });
+  persist(); render();
+}
+
+/* ---------- budget live helpers ---------- */
+function barHtml(r){
+  var est=num(r.estimate), act=num(r.actual);
+  if(est<=0){
+    return '<div class="small muted">'+(act>0?'No plan set · '+money(act)+' spent':'Set a plan amount')+'</div>';
+  }
+  var pct=act/est;
+  var cls=pct>1?"red":(pct>=0.8?"amber":"");
+  return '<div class="bar '+cls+'"><span style="width:'+Math.min(pct*100,100).toFixed(0)+'%"></span></div>'+
+         '<div class="small muted">'+Math.round(pct*100)+'%'+(pct>1?' · over by '+money(act-est):'')+'</div>';
+}
+function budgetSumInner(){
+  var t=totals();
+  return '<div class="stat"><div class="label">Wedding budget</div><div class="value">'+money(t.budget)+'</div></div>'+
+         '<div class="stat"><div class="label">Spent or committed</div><div class="value">'+money(t.spent)+'</div></div>'+
+         '<div class="stat"><div class="label">Left</div><div class="value '+(t.remaining<0?'neg':'')+'">'+money(t.remaining)+'</div></div>';
+}
+function updateBudgetRow(id){
+  var r=findItem("budget",id), el=document.getElementById("pb-"+id);
+  if(r && el) el.innerHTML=barHtml(r);
+}
+function updateBudgetSummary(){
+  var el=document.getElementById("budgetSum");
+  if(el) el.innerHTML=budgetSumInner();
+}
+
+/* ---------- charts (inline SVG / HTML, no libraries, work offline) ---------- */
+var PAL = ["var(--c1)","var(--c2)","var(--c3)","var(--c4)"];
+var OTHER = "var(--c-other)";
+function pct(a,b){ return b>0 ? Math.round(a/b*100) : 0; }
+function tipAttr(html){ return ' data-tip="'+esc(html)+'" tabindex="0"'; }
+
+/* Ring meter: one value against its whole. Status colour only when it means good/warning/over. */
+function ring(value,total,label,sub,state){
+  var p = total>0 ? value/total : 0;
+  var r=34, c=2*Math.PI*r, len=Math.max(0,Math.min(p,1))*c;
+  var col = state==="over" ? "var(--red)" : state==="warn" ? "var(--amber)" : "var(--c1)";
+  var shown = total>0 ? Math.round(p*100)+"%" : "—";
+  return '<div class="ring"'+tipAttr("<b>"+label+"</b><br>"+sub)+'>'+
+    '<svg width="84" height="84" viewBox="0 0 84 84" aria-hidden="true">'+
+      '<circle cx="42" cy="42" r="'+r+'" fill="none" stroke="var(--track)" stroke-width="9"/>'+
+      (len>0?'<circle cx="42" cy="42" r="'+r+'" fill="none" stroke="'+col+'" stroke-width="9" stroke-linecap="round" stroke-dasharray="'+len.toFixed(1)+' '+c.toFixed(1)+'" transform="rotate(-90 42 42)"/>':'')+
+      '<text x="42" y="49" text-anchor="middle" class="ring-num">'+shown+'</text>'+
+    '</svg>'+
+    '<div><div class="ring-label">'+esc(label)+'</div><div class="ring-sub">'+esc(sub)+'</div></div></div>';
+}
+
+/* Donut for part-to-whole: at most 4 named slices + "Other", 2px gaps, legend always shown. */
+function donut(items,opts){
+  opts=opts||{};
+  var total=items.reduce(function(s,x){ return s+x.value; },0);
+  if(total<=0) return '<div class="empty-chart">'+esc(opts.empty||"Nothing to show yet.")+'</div>';
+  var r=62, sw=20, c=2*Math.PI*r, gap=items.filter(function(x){return x.value>0;}).length>1?2.5:0, off=0;
+  var segs="", leg="";
+  items.forEach(function(x){
+    if(x.value<=0) return;
+    var len=x.value/total*c;
+    var draw=Math.max(len-gap,0.8);
+    var tip="<b>"+x.label+"</b><br>"+(opts.fmt?opts.fmt(x.value):x.value)+" · "+pct(x.value,total)+"%";
+    segs+='<circle class="donut-seg" cx="80" cy="80" r="'+r+'" fill="none" stroke="'+x.color+'" stroke-width="'+sw+'" stroke-dasharray="'+draw.toFixed(2)+' '+(c-draw).toFixed(2)+'" stroke-dashoffset="'+(-off).toFixed(2)+'" transform="rotate(-90 80 80)"'+tipAttr(tip)+'/>';
+    off+=len;
+    leg+='<li><span class="sw" style="background:'+x.color+'"></span>'+esc(x.label)+
+         '<span class="lv">'+(opts.fmt?opts.fmt(x.value):x.value)+'</span><span class="lp">'+pct(x.value,total)+'%</span></li>';
+  });
+  return '<div class="donut-wrap"><svg width="160" height="160" viewBox="0 0 160 160" role="img" aria-label="'+esc(opts.aria||"Chart")+'">'+segs+
+    '<text x="80" y="80" text-anchor="middle" class="donut-num">'+esc(opts.center||"")+'</text>'+
+    '<text x="80" y="99" text-anchor="middle" class="donut-cap">'+esc(opts.caption||"")+'</text></svg>'+
+    '<ul class="legend">'+leg+'</ul></div>';
+}
+
+/* Horizontal bars: one series, one colour; value at the tip. meter:true draws the "of total" track. */
+function hbars(rows,opts){
+  opts=opts||{};
+  if(!rows.length) return '<div class="empty-chart">'+esc(opts.empty||"Nothing to show yet.")+'</div>';
+  var max=opts.max || Math.max.apply(null,rows.map(function(r){ return r.max||r.value; }).concat([1]));
+  return '<div class="hb">'+rows.map(function(r){
+    var denom = opts.meter ? (r.max||max) : max;
+    var w = denom>0 ? Math.min(r.value/denom,1)*100 : 0;
+    var col = r.color || opts.color || "var(--c1)";
+    return '<div class="hb-row"><span class="hb-label" title="'+esc(r.label)+'">'+esc(r.label)+'</span>'+
+      '<div class="hb-bar"'+tipAttr("<b>"+r.label+"</b><br>"+(r.tip||r.text))+'>'+
+      '<div class="hb-track'+(opts.meter?' meter':'')+'"><span class="hb-fill" style="width:'+w.toFixed(1)+'%;background:'+col+'"></span></div>'+
+      '<span class="hb-val">'+esc(r.text)+'</span></div></div>';
+  }).join("")+'</div>';
+}
+
+/* One stacked bar for a small part-to-whole (2–3 parts), 2px gaps, legend with counts. */
+function stack(items){
+  var total=items.reduce(function(s,x){ return s+x.value; },0);
+  if(!total) return '<div class="empty-chart">Nothing to show yet.</div>';
+  return '<div class="stack">'+items.filter(function(x){return x.value>0;}).map(function(x){
+      return '<span style="flex:'+x.value+';background:'+x.color+'"'+tipAttr("<b>"+x.label+"</b><br>"+x.value+" · "+pct(x.value,total)+"%")+'></span>';
+    }).join("")+'</div>'+
+    '<div class="inline-legend">'+items.map(function(x){
+      return '<span><i class="sw" style="background:'+x.color+'"></i>'+esc(x.label)+' <b>'+x.value+'</b></span>';
+    }).join("")+'</div>';
+}
+
+/* Timeline from today to the wedding: dots for events and dated tasks; only the next item and the day itself are labelled. */
+function timeline(rows){
+  var wd=state.settings.wdate;
+  if(!wd) return '<div class="empty-chart">Set your wedding date in Settings to see the timeline.</div>';
+  var start=todayStr();
+  rows.forEach(function(r){ if(r.date<start) start=r.date; });
+  if(start>wd) start=wd;
+  var t0=new Date(start+"T00:00:00").getTime(), t1=new Date(wd+"T00:00:00").getTime();
+  if(t1<=t0) t1=t0+86400000;
+  var W=800, L=20, R=780, Y=62;
+  var x=function(d){ var t=new Date(d+"T00:00:00").getTime(); return L+(Math.min(Math.max(t,t0),t1)-t0)/(t1-t0)*(R-L); };
+  var svg='<line class="tl-axis" x1="'+L+'" y1="'+Y+'" x2="'+R+'" y2="'+Y+'"/>';
+  // month ticks (at most ~8 labels)
+  var d=new Date(t0); d.setDate(1); d.setMonth(d.getMonth()+1);
+  var months=[]; while(d.getTime()<t1){ months.push(new Date(d)); d.setMonth(d.getMonth()+1); }
+  var stepM=Math.max(1,Math.ceil(months.length/8));
+  months.forEach(function(m,i){
+    var mx=L+(m.getTime()-t0)/(t1-t0)*(R-L);
+    svg+='<line x1="'+mx.toFixed(1)+'" y1="'+(Y-4)+'" x2="'+mx.toFixed(1)+'" y2="'+(Y+4)+'" stroke="var(--grid)"/>';
+    if(i%stepM===0) svg+='<text class="tl-tick" x="'+mx.toFixed(1)+'" y="'+(Y+22)+'" text-anchor="middle">'+m.toLocaleDateString("en-US",{month:"short"})+(m.getMonth()===0?" "+String(m.getFullYear()).slice(2):"")+'</text>';
+  });
+  // progress so far
+  var tx=x(todayStr());
+  svg+='<line x1="'+L+'" y1="'+Y+'" x2="'+tx.toFixed(1)+'" y2="'+Y+'" stroke="var(--c1)" stroke-width="2" stroke-linecap="round"/>';
+  svg+='<text class="tl-label muted" x="'+tx.toFixed(1)+'" y="'+(Y-34)+'" text-anchor="middle">Today</text><line x1="'+tx.toFixed(1)+'" y1="'+(Y-28)+'" x2="'+tx.toFixed(1)+'" y2="'+(Y-6)+'" stroke="var(--muted)" stroke-width="1"/>';
+  var today=todayStr();
+  var next=rows.filter(function(r){ return r.date>=today && !r.done; }).sort(function(a,b){ return a.date<b.date?-1:1; })[0];
+  rows.forEach(function(r){
+    var cx=x(r.date), past=r.date<today||r.done;
+    var col=past?"var(--c-other)":(r.type==="Event"?"var(--c1)":"var(--c2)");
+    svg+='<g class="tl-dot"'+tipAttr("<b>"+r.label+"</b><br>"+niceDate(r.date)+" · "+r.type+(r.done?" · done":""))+'>'+
+      '<circle cx="'+cx.toFixed(1)+'" cy="'+Y+'" r="14" fill="transparent"/>'+
+      '<circle class="m" cx="'+cx.toFixed(1)+'" cy="'+Y+'" r="6" fill="'+col+'" stroke="var(--ivory)" stroke-width="2"/></g>';
+  });
+  if(next){
+    var nx=x(next.date), anchor=nx>R-140?"end":(nx<L+140?"start":"middle");
+    svg+='<text class="tl-label" x="'+nx.toFixed(1)+'" y="'+(Y+44)+'" text-anchor="'+anchor+'">Next: '+esc(next.label.length>34?next.label.slice(0,33)+"…":next.label)+'</text>';
+  }
+  svg+='<g'+tipAttr("<b>Wedding day</b><br>"+niceDate(wd))+' class="tl-dot"><circle cx="'+R+'" cy="'+Y+'" r="16" fill="transparent"/><circle cx="'+R+'" cy="'+Y+'" r="9" fill="var(--c1)" stroke="var(--ivory)" stroke-width="2"/></g>'+
+       '<text class="tl-label" x="'+R+'" y="'+(Y-34)+'" text-anchor="end">Wedding day ♥</text>';
+  return '<div class="timeline"><svg viewBox="0 0 '+W+' 120" role="img" aria-label="Timeline from today to the wedding">'+svg+'</svg>'+
+    '<div class="inline-legend" style="margin-top:4px"><span><i class="sw" style="background:var(--c1)"></i>Event</span><span><i class="sw" style="background:var(--c2)"></i>Task with a due date</span><span><i class="sw" style="background:var(--c-other)"></i>Done or passed</span></div></div>';
+}
+
+/* Budget charts, re-drawn live as the user types in the table */
+function budgetChartsInner(){
+  var plan=state.budget.filter(function(r){ return num(r.estimate)>0; })
+    .map(function(r){ return {label:r.name||"Unnamed",value:num(r.estimate)}; })
+    .sort(function(a,b){ return b.value-a.value; });
+  var slices=plan.slice(0,4).map(function(p,i){ return {label:p.label,value:p.value,color:PAL[i]}; });
+  var rest=plan.slice(4).reduce(function(s,p){ return s+p.value; },0);
+  if(rest>0) slices.push({label:"Everything else",value:rest,color:OTHER});
+  var totalPlan=plan.reduce(function(s,p){ return s+p.value; },0);
+
+  var spent=state.budget.filter(function(r){ return num(r.actual)>0; })
+    .map(function(r){
+      var est=num(r.estimate), act=num(r.actual);
+      var over=est>0&&act>est, warn=est>0&&act>=0.8*est&&!over;
+      return {label:r.name||"Unnamed",value:act,text:money(act),
+        color:over?"var(--red)":(warn?"var(--amber)":"var(--c1)"),
+        tip:money(act)+(est>0?" of "+money(est)+" planned ("+pct(act,est)+"%)":"")+(over?" · over budget":"")};
+    })
+    .sort(function(a,b){ return b.value-a.value; }).slice(0,7);
+
+  return '<div class="card"><h3 class="chart-title">Where the money goes</h3><p class="chart-sub">Your plan, by category</p>'+
+      donut(slices,{fmt:money,center:money(totalPlan),caption:"planned",aria:"Planned budget by category",empty:"Add plan amounts in the table below."})+'</div>'+
+    '<div class="card"><h3 class="chart-title">Spent so far</h3><p class="chart-sub">Largest categories first · amber at 80% of plan, red when over</p>'+
+      hbars(spent,{empty:"Nothing spent yet. Enter actual amounts below."})+'</div>';
+}
+function updateBudgetCharts(){
+  var el=document.getElementById("budgetCharts");
+  if(el) el.innerHTML=budgetChartsInner();
+}
+
+/* ---------- help ---------- */
+function head(key, sub){
+  var on = state.settings.helpOn;
+  var btn = on ? '<button class="help-btn" data-action="help" data-key="'+key+'" aria-label="What is this?">?</button>' : "";
+  var panel = (on && ui.openHelp===key) ? '<div class="help-panel">'+esc(HELP[key])+'</div>' : "";
+  return '<div class="page-head"><p class="muted">'+esc(sub)+'</p><div>'+btn+'</div></div>'+panel;
+}
+
+/* ---------- screens ---------- */
+function todayScreen(){
+  var t=totals();
+  var open=openTasks();
+  var next=open[0];
+  var small=open.slice(1,4);
+  var days=state.settings.wdate?daysUntil(state.settings.wdate):null;
+
+  var html=head("today","Here is where your money and to-dos stand right now.");
+  html+='<div class="hero">'+
+    '<div class="eyebrow">Remaining to spend</div>'+
+    '<div class="hero-num '+(t.remaining<0?'neg':'')+'">'+money(t.remaining)+'</div>'+
+    '<div class="hero-sub">'+money(t.spent)+' spent of '+money(t.budget)+(days!==null&&days>0?' · '+days+' days to go':'')+'</div>'+
+    (t.remaining<0?'<div class="hero-warn">You are '+money(-t.remaining)+' over budget. The Budget screen shows where.</div>':'')+
+    '</div>';
+
+  var doneN=state.tasks.filter(function(x){ return x.done; }).length;
+  var replied=state.guests.filter(function(g){ return g.rsvp!=="pending"; }).length;
+  var booked=state.vendors.filter(function(v){ return v.contract; }).length;
+  var usedState = t.spent>t.budget ? "over" : "";
+  html+='<div class="card"><div class="eyebrow">At a glance</div><div class="rings">'+
+    ring(t.spent,t.budget,"Budget used",money(t.spent)+" of "+money(t.budget),usedState)+
+    ring(doneN,state.tasks.length,"Checklist done",doneN+" of "+state.tasks.length+" tasks")+
+    ring(replied,state.guests.length,"RSVPs back",replied+" of "+state.guests.length+" guests")+
+    ring(booked,state.vendors.length,"Vendors booked",booked+" of "+state.vendors.length+" signed")+
+    '</div></div>';
+
+  html+='<div class="two-col">';
+  html+='<div class="card"><div class="eyebrow">Next up</div>';
+  if(next){
+    html+='<div class="next-text">'+esc(next.text)+'</div>'+
+          (next.due?'<div class="muted small">Due '+niceDate(next.due)+'</div>':'')+
+          '<div class="actions"><button class="primary" data-action="complete" data-id="'+next.id+'">Done, next</button></div>';
+  } else {
+    html+='<div class="next-text">All caught up.</div>';
+  }
+  html+='</div>';
+
+  html+='<div class="card"><div class="eyebrow">Three small things</div>';
+  if(small.length){
+    html+=small.map(function(task){
+      return '<label class="task-row"><input type="checkbox" data-check="'+task.id+'"><span>'+esc(task.text)+'</span></label>';
+    }).join("");
+  } else {
+    html+='<p class="muted">Nothing else right now.</p>';
+  }
+  html+='</div></div>';
+
+  html+='<div class="card"><div class="eyebrow">Log a spend</div>'+
+    '<p class="muted small">Tap an amount when money goes out. You can change these amounts in Settings.</p>'+
+    '<div class="quick">'+state.settings.presets.map(function(a){
+      return '<button class="chip" data-action="quick" data-amount="'+a+'">+ '+money(a)+'</button>';
+    }).join("")+'</div>'+
+    '<div class="row-inline"><input id="qAmount" type="number" min="0" step="0.01" placeholder="Other amount">'+
+    '<input id="qLabel" placeholder="What for (optional)">'+
+    '<button class="primary" data-action="add-spend">Add</button></div>';
+  if(state.spends.length){
+    html+='<div style="margin-top:12px">'+state.spends.slice().reverse().slice(0,5).map(function(s){
+      return '<div class="list-row"><span>'+esc(s.label||"Spend")+' <span class="muted small">· '+niceDate(s.date)+'</span></span>'+
+             '<span>'+money(s.amount)+' <button class="x" data-action="del-spend" data-id="'+s.id+'" aria-label="Remove">✕</button></span></div>';
+    }).join("")+'</div>';
+  } else {
+    html+='<p class="muted small" style="margin-top:12px">Nothing logged yet.</p>';
+  }
+  html+='</div>';
+  return html;
+}
+
+function plannerScreen(){
+  var rows=[];
+  state.events.forEach(function(e){ rows.push({id:e.id,coll:"events",date:e.date,label:e.label,type:"Event",done:false}); });
+  state.tasks.filter(function(t){ return t.due; }).forEach(function(t){ rows.push({id:t.id,coll:"tasks",date:t.due,label:t.text,type:"Task",done:t.done}); });
+  rows.sort(function(a,b){ return a.date<b.date?-1:a.date>b.date?1:0; });
+
+  var days=state.settings.wdate?daysUntil(state.settings.wdate):null;
+  var countText = state.settings.wdate ? (days>0?days+' days':days===0?'Today!':'Married!') : 'Not set yet';
+  var html=head("planner","Important dates and deadlines, in order.");
+  html+='<div class="card"><div class="eyebrow">Wedding day</div><div class="big">'+countText+'</div>'+
+        '<p class="muted small">'+(state.settings.wdate?niceDate(state.settings.wdate)+(state.settings.venue?' · '+esc(state.settings.venue):''):'Set your date in Settings to see the countdown.')+'</p></div>';
+
+  html+='<div class="card"><h3 class="chart-title">Your timeline</h3><p class="chart-sub">From today to the big day · hover a dot for details</p>'+timeline(rows)+'</div>';
+
+  html+='<div class="card"><div class="eyebrow">Add an event</div><div class="row-inline">'+
+        '<input type="date" id="eDate"><input id="eLabel" placeholder="e.g. Cake tasting">'+
+        '<button class="primary" data-action="add-event">Add</button></div></div>';
+
+  html+='<div class="card">';
+  if(!rows.length) html+='<p class="muted">Nothing scheduled yet.</p>';
+  rows.forEach(function(r){
+    var passed = r.date<todayStr() && !r.done;
+    html+='<div class="list-row '+(passed?'passed':'')+'" data-row="'+r.id+'">'+
+      '<span><strong>'+niceDate(r.date)+'</strong> &nbsp; <span style="'+(r.done?'text-decoration:line-through;color:var(--muted)':'')+'">'+esc(r.label)+'</span>'+
+      '<span class="tag">'+r.type+'</span>'+(passed?' <span class="muted small">passed</span>':'')+'</span>'+
+      (r.coll==="events"?'<button class="x" data-action="del" data-coll="events" data-id="'+r.id+'" aria-label="Remove">✕</button>':'')+
+      '</div>';
+  });
+  html+='</div>';
+  return html;
+}
+
+function budgetScreen(){
+  var html=head("budget","Plan each category, then enter what you have actually paid or committed.");
+  html+='<div class="grid3" id="budgetSum">'+budgetSumInner()+'</div>';
+  html+='<div class="charts" id="budgetCharts">'+budgetChartsInner()+'</div>';
+  html+='<div class="card"><div class="table-wrap"><table><thead><tr>'+
+    '<th>Category</th><th>Plan</th><th>Actual</th><th style="width:34%">Progress</th><th></th></tr></thead><tbody>';
+  html+=state.budget.map(function(r){
+    return '<tr data-row="'+r.id+'">'+
+      '<td><input data-coll="budget" data-id="'+r.id+'" data-field="name" value="'+esc(r.name)+'"></td>'+
+      '<td><input type="number" min="0" data-num="1" data-coll="budget" data-id="'+r.id+'" data-field="estimate" value="'+(num(r.estimate)||"")+'"></td>'+
+      '<td><input type="number" min="0" data-num="1" data-coll="budget" data-id="'+r.id+'" data-field="actual" value="'+(num(r.actual)||"")+'"></td>'+
+      '<td><div id="pb-'+r.id+'">'+barHtml(r)+'</div></td>'+
+      '<td><button class="x" data-action="del" data-coll="budget" data-id="'+r.id+'" aria-label="Remove">✕</button></td></tr>';
+  }).join("");
+  html+='</tbody></table></div><div class="actions"><button class="ghost" data-action="add-budget">+ Add category</button></div></div>';
+  return html;
+}
+
+function guestRowsHtml(){
+  var q=ui.filter.guests.toLowerCase();
+  var rows=state.guests.filter(function(g){ return !q || g.name.toLowerCase().indexOf(q)>-1; });
+  if(!rows.length){
+    return '<tr><td colspan="8" class="muted">'+(state.guests.length?'No guests match your search.':'No guests yet. Add your first one above.')+'</td></tr>';
+  }
+  return rows.map(function(g){
+    return '<tr data-row="'+g.id+'">'+
+      '<td><input data-coll="guests" data-id="'+g.id+'" data-field="name" value="'+esc(g.name)+'"></td>'+
+      '<td>'+sel("guests",g.id,"side",["Partner A","Partner B","Both"],g.side)+'</td>'+
+      '<td>'+sel("guests",g.id,"rsvp",[["pending","Awaiting"],["yes","Attending"],["no","Declined"]],g.rsvp)+'</td>'+
+      '<td>'+sel("guests",g.id,"plus",[["no","No"],["yes","Yes"]],g.plus?"yes":"no")+'</td>'+
+      '<td><input data-coll="guests" data-id="'+g.id+'" data-field="meal" value="'+esc(g.meal)+'" placeholder="Meal"></td>'+
+      '<td><input data-coll="guests" data-id="'+g.id+'" data-field="table" value="'+esc(g.table)+'" style="width:70px" placeholder="—"></td>'+
+      '<td><input data-coll="guests" data-id="'+g.id+'" data-field="contact" value="'+esc(g.contact)+'" placeholder="Phone or email"></td>'+
+      '<td><button class="x" data-action="del" data-coll="guests" data-id="'+g.id+'" aria-label="Remove">✕</button></td>'+
+      '</tr>';
+  }).join("");
+}
+
+function guestsScreen(){
+  var g=state.guests;
+  var yes=g.filter(function(x){ return x.rsvp==="yes"; });
+  var no=g.filter(function(x){ return x.rsvp==="no"; });
+  var pend=g.filter(function(x){ return x.rsvp==="pending"; });
+  var seats=yes.reduce(function(s,x){ return s+1+(x.plus?1:0); },0);
+  var target=state.settings.guestTarget;
+
+  var html=head("guests","Who is coming, and how many seats you need.");
+  html+='<div class="grid4">'+
+    '<div class="stat"><div class="label">Invited</div><div class="value">'+g.length+'</div></div>'+
+    '<div class="stat"><div class="label">Attending</div><div class="value">'+yes.length+'</div></div>'+
+    '<div class="stat"><div class="label">Awaiting reply</div><div class="value">'+pend.length+'</div></div>'+
+    '<div class="stat"><div class="label">Seats needed</div><div class="value">'+seats+(target?' <span class="muted small">of '+target+'</span>':'')+'</div></div>'+
+    '</div>';
+
+  if(g.length){
+    var meals={};
+    yes.forEach(function(x){ var m=(x.meal||"").trim()||"Not chosen yet"; meals[m]=(meals[m]||0)+1; });
+    var mealRows=Object.keys(meals).map(function(k){ return {label:k,value:meals[k],text:String(meals[k]),tip:meals[k]+" of "+yes.length+" attending"}; })
+      .sort(function(a,b){ return b.value-a.value; }).slice(0,6);
+    var count=function(side){ return g.filter(function(x){ return x.side===side; }).length; };
+    html+='<div class="charts">'+
+      '<div class="card"><h3 class="chart-title">RSVP status</h3><p class="chart-sub">Everyone you invited</p>'+
+        donut([
+          {label:"Attending",value:yes.length,color:"var(--c1)"},
+          {label:"Awaiting reply",value:pend.length,color:"var(--c2)"},
+          {label:"Declined",value:no.length,color:OTHER}
+        ],{center:yes.length+" / "+g.length,caption:"attending",aria:"RSVP status"})+'</div>'+
+      '<div class="card"><h3 class="chart-title">Meal choices</h3><p class="chart-sub">Guests who said yes · send this to your caterer</p>'+
+        hbars(mealRows,{empty:"No one has said yes yet."})+
+        '<h3 class="chart-title" style="margin-top:18px">Whose guests</h3><p class="chart-sub">Invited, by side</p>'+
+        stack([
+          {label:state.settings.p1||"Partner A",value:count("Partner A"),color:"var(--c1)"},
+          {label:state.settings.p2||"Partner B",value:count("Partner B"),color:"var(--c2)"},
+          {label:"Both",value:count("Both"),color:"var(--c3)"}
+        ])+'</div>'+
+      '</div>';
+  }
+
+  html+='<div class="card"><div class="eyebrow">Add a guest</div><div class="row-inline">'+
+    '<input id="gName" placeholder="Full name">'+
+    '<select id="gSide"><option>Partner A</option><option>Partner B</option><option>Both</option></select>'+
+    '<select id="gPlus"><option value="no">No +1</option><option value="yes">Has +1</option></select>'+
+    '<input id="gContact" placeholder="Phone or email (optional)">'+
+    '<button class="primary" data-action="add-guest">Add</button></div></div>';
+
+  html+='<div class="card"><div class="row-inline" style="margin:0 0 8px"><input id="gFilter" placeholder="Search by name" value="'+esc(ui.filter.guests)+'"></div>'+
+    '<div class="table-wrap"><table><thead><tr><th>Name</th><th>Side</th><th>RSVP</th><th>+1</th><th>Meal</th><th>Table</th><th>Contact</th><th></th></tr></thead>'+
+    '<tbody id="guestRows">'+guestRowsHtml()+'</tbody></table></div></div>';
+  return html;
+}
+
+function vendorsScreen(){
+  var v=state.vendors;
+  var booked=v.filter(function(x){ return x.contract; }).length;
+  var deposits=v.filter(function(x){ return x.deposit; }).length;
+  var cost=v.reduce(function(s,x){ return s+num(x.cost); },0);
+
+  var html=head("vendors","Every supplier in one place.");
+  html+='<div class="grid3">'+
+    '<div class="stat"><div class="label">Contracts signed</div><div class="value">'+booked+' / '+v.length+'</div></div>'+
+    '<div class="stat"><div class="label">Deposits paid</div><div class="value">'+deposits+' / '+v.length+'</div></div>'+
+    '<div class="stat"><div class="label">Total quoted</div><div class="value">'+money(cost)+'</div></div></div>';
+
+  if(v.length){
+    var costRows=v.filter(function(x){ return num(x.cost)>0; })
+      .map(function(x){ return {label:x.name,value:num(x.cost),text:money(x.cost),
+        tip:money(x.cost)+(x.cat?" · "+x.cat:"")+" · "+(x.contract?"contract signed":"not signed yet")+", "+(x.deposit?"deposit paid":"no deposit yet")}; })
+      .sort(function(a,b){ return b.value-a.value; }).slice(0,8);
+    html+='<div class="charts">'+
+      '<div class="card"><h3 class="chart-title">Cost by vendor</h3><p class="chart-sub">Quoted price, largest first</p>'+hbars(costRows,{empty:"Add quoted costs to see this chart."})+'</div>'+
+      '<div class="card"><h3 class="chart-title">Booking progress</h3><p class="chart-sub">How many vendors are locked in</p><div class="rings">'+
+        ring(booked,v.length,"Contracts signed",booked+" of "+v.length+" vendors")+
+        ring(deposits,v.length,"Deposits paid",deposits+" of "+v.length+" vendors")+
+      '</div></div></div>';
+  }
+
+  html+='<div class="card"><div class="eyebrow">Add a vendor</div><div class="row-inline">'+
+    '<input id="vName" placeholder="Vendor name"><input id="vCat" placeholder="Category">'+
+    '<input id="vCost" type="number" min="0" placeholder="Quoted cost">'+
+    '<input id="vContact" placeholder="Phone or email">'+
+    '<button class="primary" data-action="add-vendor">Add</button></div></div>';
+
+  html+='<div class="card"><div class="table-wrap"><table><thead><tr>'+
+    '<th>Vendor</th><th>Category</th><th>Cost</th><th>Deposit paid</th><th>Contract signed</th><th>Contact</th><th></th></tr></thead><tbody>';
+  if(!v.length){
+    html+='<tr><td colspan="7" class="muted">No vendors yet. Add your first one above.</td></tr>';
+  }
+  html+=v.map(function(x){
+    return '<tr data-row="'+x.id+'">'+
+      '<td><input data-coll="vendors" data-id="'+x.id+'" data-field="name" value="'+esc(x.name)+'"></td>'+
+      '<td><input data-coll="vendors" data-id="'+x.id+'" data-field="cat" value="'+esc(x.cat)+'"></td>'+
+      '<td><input type="number" min="0" data-num="1" data-coll="vendors" data-id="'+x.id+'" data-field="cost" value="'+(num(x.cost)||"")+'"></td>'+
+      '<td><input type="checkbox" data-coll="vendors" data-id="'+x.id+'" data-field="deposit" '+(x.deposit?'checked':'')+'></td>'+
+      '<td><input type="checkbox" data-coll="vendors" data-id="'+x.id+'" data-field="contract" '+(x.contract?'checked':'')+'></td>'+
+      '<td><input data-coll="vendors" data-id="'+x.id+'" data-field="contact" value="'+esc(x.contact)+'"></td>'+
+      '<td><button class="x" data-action="del" data-coll="vendors" data-id="'+x.id+'" aria-label="Remove">✕</button></td></tr>';
+  }).join("");
+  html+='</tbody></table></div></div>';
+  return html;
+}
+
+function checklistScreen(){
+  var html=head("checklist","Work through these in order. Tick things off as you go.");
+  html+='<div class="card"><div class="eyebrow">Add a task</div><div class="row-inline">'+
+    '<input id="tText" placeholder="e.g. Book hair trial"><input type="date" id="tDue">'+
+    '<button class="primary" data-action="add-task">Add</button></div></div>';
+
+  var phases=[];
+  state.tasks.forEach(function(t){ if(phases.indexOf(t.phase)<0) phases.push(t.phase); });
+
+  if(state.tasks.length){
+    var doneAll=state.tasks.filter(function(t){ return t.done; }).length;
+    var phaseRows=phases.map(function(ph){
+      var list=state.tasks.filter(function(t){ return t.phase===ph; });
+      var d=list.filter(function(t){ return t.done; }).length;
+      return {label:ph,value:d,max:list.length,text:d+"/"+list.length,tip:d+" of "+list.length+" done",
+              color:d===list.length?"var(--ok)":"var(--c1)"};
+    });
+    html+='<div class="charts">'+
+      '<div class="card"><h3 class="chart-title">Overall progress</h3><p class="chart-sub">Every task on your list</p><div class="rings">'+
+        ring(doneAll,state.tasks.length,"Tasks done",doneAll+" of "+state.tasks.length)+
+        ring(state.tasks.length-doneAll,state.tasks.length,"Still to do",(state.tasks.length-doneAll)+" tasks left")+
+      '</div></div>'+
+      '<div class="card"><h3 class="chart-title">Progress by stage</h3><p class="chart-sub">Green when a stage is finished</p>'+hbars(phaseRows,{meter:true})+'</div>'+
+    '</div>';
+  }
+
+  phases.forEach(function(ph){
+    html+='<div class="card"><div class="eyebrow">'+esc(ph)+'</div>';
+    state.tasks.filter(function(t){ return t.phase===ph; }).forEach(function(t){
+      html+='<div class="task-line" data-row="'+t.id+'">'+
+        '<input type="checkbox" data-check="'+t.id+'" '+(t.done?'checked':'')+'>'+
+        '<input class="task-text '+(t.done?'done':'')+'" data-coll="tasks" data-id="'+t.id+'" data-field="text" value="'+esc(t.text)+'">'+
+        '<input type="date" data-coll="tasks" data-id="'+t.id+'" data-field="due" value="'+esc(t.due)+'">'+
+        '<button class="x" data-action="del" data-coll="tasks" data-id="'+t.id+'" aria-label="Remove">✕</button></div>';
+    });
+    html+='</div>';
+  });
+  return html;
+}
+
+function field(label,type,key,value,isNum){
+  return '<label>'+label+'<input type="'+type+'" data-setting="'+key+'"'+(isNum?' data-num="1"':'')+' value="'+esc(value==null?"":value)+'"></label>';
+}
+
+function settingsScreen(){
+  var s=state.settings;
+  var html=head("settings","Your details and preferences. Everything saves as you go.");
+
+  html+='<div class="card"><div class="eyebrow">Your wedding</div><div class="form-grid">'+
+    field("Partner 1 name","text","p1",s.p1)+
+    field("Partner 2 name","text","p2",s.p2)+
+    field("Wedding date","date","wdate",s.wdate)+
+    field("Venue","text","venue",s.venue)+
+    field("Total budget ($)","number","totalBudget",s.totalBudget,true)+
+    field("Guest target","number","guestTarget",s.guestTarget,true)+
+    '</div></div>';
+
+  html+='<div class="card"><div class="eyebrow">Quick-spend buttons</div><p class="muted small">The four amounts on the Today screen.</p><div class="form-grid">'+
+    s.presets.map(function(a,i){
+      return '<label>Button '+(i+1)+' ($)<input type="number" min="0" data-preset="'+i+'" value="'+a+'"></label>';
+    }).join("")+'</div></div>';
+
+  html+='<div class="card"><div class="eyebrow">Help</div><label class="check"><input type="checkbox" data-setting="helpOn" '+(s.helpOn?'checked':'')+'> Show the ? help buttons on each screen</label></div>';
+
+  if(!DEMO){
+    if(state.mode==="example"){
+      html+='<div class="card"><div class="eyebrow">Example wedding</div><p class="muted small">You are using the example wedding. When you are ready, start your own. This clears the sample data.</p><button class="primary" data-action="start-mine">Start my wedding</button></div>';
+    } else {
+      html+='<div class="card"><div class="eyebrow">Example wedding</div><p class="muted small">Want to look at the example again? This replaces your current data.</p><button class="ghost" data-action="load-example">Load the example</button></div>';
+    }
+    html+='<div class="card"><div class="eyebrow">Backup</div><p class="muted small">Your data lives in this browser. Download a backup now and then and keep it somewhere safe.</p>'+
+      '<div class="actions"><button class="ghost" data-action="export">Download backup</button><button class="ghost" data-action="import">Restore from backup</button></div></div>';
+  }
+
+  html+='<div class="card"><div class="eyebrow">Start fresh</div><p class="muted small">Clears everything, including the example, and leaves a blank planner ready for your wedding.</p>'+
+    '<button class="danger" data-action="erase">Erase everything</button></div>';
+  return html;
+}
+
+/* ---------- banner and chrome ---------- */
+function renderBanner(){
+  var el=document.getElementById("banner");
+  if(state.mode!=="example"){ el.innerHTML=""; return; }
+  if(DEMO){
+    el.innerHTML='<div class="banner"><div><strong>Demo.</strong> Explore everything. Nothing you change is saved, so a refresh starts the example again. The full planner saves your own wedding.</div>'+
+      '<button class="ghost" data-action="load-example">Restart demo</button></div>';
+  } else {
+    el.innerHTML='<div class="banner"><div><strong>This is an example wedding.</strong> Explore freely, then start your own. Starting clears the sample data.</div>'+
+      '<button class="primary" data-action="start-mine">Start my wedding</button></div>';
+  }
+}
+
+function renderChrome(){
+  document.getElementById("nav").innerHTML = SCREENS.map(function(s){
+    return '<button class="nav-btn '+(ui.screen===s.id?'active':'')+'" data-go="'+s.id+'">'+s.label+'</button>';
+  }).join("");
+  var cur=SCREENS.find(function(s){ return s.id===ui.screen; });
+  document.getElementById("pageTitle").textContent = cur.label;
+  var names=[state.settings.p1,state.settings.p2].filter(Boolean).join(" & ");
+  document.getElementById("brandSub").textContent = names || "Your wedding";
+  document.getElementById("dateLine").textContent = new Date().toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"}).toUpperCase();
+  document.getElementById("helpBtn").textContent = state.settings.helpOn ? "Help: on" : "Help: off";
+  document.getElementById("modeBadge").textContent = DEMO ? "Demo" : (state.mode==="example" ? "Example" : "");
+  document.getElementById("sideFoot").textContent = DEMO ? "Demo · nothing you change is saved" : "Your planner saves on this device";
+  renderBanner();
+}
+
+function render(){
+  renderChrome();
+  var views={today:todayScreen,planner:plannerScreen,budget:budgetScreen,guests:guestsScreen,vendors:vendorsScreen,checklist:checklistScreen,settings:settingsScreen};
+  document.getElementById("main").innerHTML = views[ui.screen]();
+  if(ui.highlight){
+    var el=document.querySelector('[data-row="'+ui.highlight+'"]');
+    if(el){ el.classList.add("flash"); el.scrollIntoView({block:"center",behavior:"smooth"}); }
+    ui.highlight=null;
+  }
+}
+
+function goTo(screen,hid){
+  ui.screen=screen; ui.highlight=hid||null; ui.openHelp=null;
+  render(); window.scrollTo(0,0);
+}
+
+/* ---------- search (Ctrl K) ---------- */
+var modal=document.getElementById("modal");
+
+function openSearch(){
+  modal.classList.remove("hidden");
+  modal.innerHTML='<div class="sheet" role="dialog" aria-label="Search">'+
+    '<input id="sq" placeholder="Search screens, guests, vendors, tasks…" autocomplete="off">'+
+    '<div id="sres"></div><div class="muted small" style="margin-top:6px">Esc to close · Enter opens the first result</div></div>';
+  document.getElementById("sq").focus();
+  drawResults("");
+}
+function closeSearch(){ modal.classList.add("hidden"); modal.innerHTML=""; }
+
+function drawResults(q){
+  q=(q||"").trim().toLowerCase();
+  var items=[];
+  var hit=function(text){ return !q || text.toLowerCase().indexOf(q)>-1; };
+
+  SCREENS.forEach(function(s){ if(hit(s.label)) items.push({label:s.label,sub:"Screen",jump:s.id,hid:""}); });
+  if(q){
+    state.guests.forEach(function(g){ if(hit(g.name)) items.push({label:g.name,sub:"Guest · "+g.rsvp,jump:"guests",hid:g.id}); });
+    state.vendors.forEach(function(v){ if(hit(v.name+" "+v.cat)) items.push({label:v.name,sub:"Vendor · "+(v.cat||"no category"),jump:"vendors",hid:v.id}); });
+    state.tasks.forEach(function(t){ if(hit(t.text)) items.push({label:t.text,sub:"Task · "+(t.done?"done":"open"),jump:"checklist",hid:t.id}); });
+    state.budget.forEach(function(r){ if(hit(r.name)) items.push({label:r.name,sub:"Budget category",jump:"budget",hid:r.id}); });
+    state.events.forEach(function(e){ if(hit(e.label)) items.push({label:e.label,sub:"Planner · "+niceDate(e.date),jump:"planner",hid:e.id}); });
+  }
+  items=items.slice(0,12);
+  document.getElementById("sres").innerHTML = items.length
+    ? items.map(function(i){
+        return '<button class="res" data-jump="'+i.jump+'" data-hid="'+i.hid+'"><span>'+esc(i.label)+'</span><span class="muted small">'+esc(i.sub)+'</span></button>';
+      }).join("")
+    : '<p class="muted">Nothing matches that yet.</p>';
+}
+
+/* ---------- backup ---------- */
+function exportBackup(){
+  var blob=new Blob([JSON.stringify(state,null,2)],{type:"application/json"});
+  var a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="wedding-backup-"+todayStr()+".json";
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function(){ URL.revokeObjectURL(a.href); },1000);
+}
+
+function handleImport(input){
+  var file=input.files[0]; if(!file) return;
+  var reader=new FileReader();
+  reader.onload=function(){
+    try{
+      var d=JSON.parse(reader.result);
+      if(!d || !Array.isArray(d.budget) || !Array.isArray(d.tasks)) throw new Error("bad");
+      if(!confirm("Restore this backup and replace your current data?")) return;
+      state=Object.assign(blankState(), d);
+      persist(); render();
+      alert("Backup restored.");
+    }catch(err){
+      alert("That file isn't a planner backup.");
+    }
+  };
+  reader.readAsText(file);
+  input.value="";
+}
+
+/* ---------- actions ---------- */
+function act(a,t){
+  switch(a){
+    case "search": openSearch(); break;
+    case "help": ui.openHelp = ui.openHelp===t.dataset.key ? null : t.dataset.key; render(); break;
+    case "toggle-help": state.settings.helpOn=!state.settings.helpOn; ui.openHelp=null; persist(); render(); break;
+    case "quick": addSpend(num(t.dataset.amount),"Quick spend"); break;
+    case "add-spend":
+      var amt=num(val("qAmount"));
+      if(amt>0) addSpend(amt, val("qLabel").trim()||"Spend");
+      else alert("Type an amount first.");
+      break;
+    case "del-spend":
+      state.spends=state.spends.filter(function(x){ return x.id!==t.dataset.id; });
+      persist(); render(); break;
+    case "complete": setDone(t.dataset.id,true); break;
+    case "del": removeItem(t.dataset.coll,t.dataset.id); break;
+    case "add-budget":
+      state.budget.push({id:uid(),name:"New category",estimate:0,actual:0});
+      persist(); render(); break;
+    case "add-guest":
+      var gName=val("gName").trim();
+      if(!gName){ alert("Add a name first."); break; }
+      state.guests.push({id:uid(),name:gName,side:val("gSide"),plus:val("gPlus")==="yes",rsvp:"pending",meal:"",table:"",contact:val("gContact").trim()});
+      persist(); render(); break;
+    case "add-vendor":
+      var vName=val("vName").trim();
+      if(!vName){ alert("Add a vendor name first."); break; }
+      state.vendors.push({id:uid(),name:vName,cat:val("vCat").trim(),cost:num(val("vCost")),deposit:false,contract:false,contact:val("vContact").trim()});
+      persist(); render(); break;
+    case "add-task":
+      var tText=val("tText").trim();
+      if(!tText){ alert("Type the task first."); break; }
+      state.tasks.push({id:uid(),phase:"Your tasks",text:tText,due:val("tDue"),done:false});
+      persist(); render(); break;
+    case "add-event":
+      if(!val("eDate")){ alert("Pick a date first."); break; }
+      state.events.push({id:uid(),date:val("eDate"),label:val("eLabel").trim()||"Event"});
+      persist(); render(); break;
+    case "export": exportBackup(); break;
+    case "import": document.getElementById("importFile").click(); break;
+    case "start-mine":
+      if(confirm("Clear the example and start your own wedding? Your details will be blank.")) resetTo(blankState());
+      break;
+    case "load-example":
+      if(DEMO || confirm("Replace your data with the example wedding?")) resetTo(exampleState());
+      break;
+    case "erase":
+      if(confirm("Erase everything in this planner? This can't be undone.")) resetTo(blankState());
+      break;
+  }
+}
+
+/* ---------- event wiring ---------- */
+document.addEventListener("click", function(e){
+  var t=e.target.closest("[data-go],[data-jump],[data-action]");
+  if(!t){
+    if(e.target===modal) closeSearch();
+    return;
+  }
+  if(t.dataset.jump){ closeSearch(); goTo(t.dataset.jump, t.dataset.hid); return; }
+  if(t.dataset.go){ goTo(t.dataset.go,""); return; }
+  act(t.dataset.action, t);
+});
+
+document.addEventListener("keydown", function(e){
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==="k"){ e.preventDefault(); openSearch(); }
+  else if(e.key==="Escape") closeSearch();
+  else if(e.key==="Enter" && e.target && e.target.id==="sq"){
+    var first=document.querySelector("#sres .res");
+    if(first) first.click();
+  }
+});
+
+document.addEventListener("input", function(e){
+  var el=e.target;
+  if(el.id==="sq"){ drawResults(el.value); return; }
+  if(el.id==="gFilter"){
+    ui.filter.guests=el.value;
+    var rows=document.getElementById("guestRows");
+    if(rows) rows.innerHTML=guestRowsHtml();
+    return;
+  }
+  if(el.tagName==="SELECT" || el.type==="checkbox") return;
+  var coll=el.dataset.coll; if(!coll) return;
+  var item=findItem(coll,el.dataset.id); if(!item) return;
+  item[el.dataset.field] = el.dataset.num ? num(el.value) : el.value;
+  persist();
+  if(coll==="budget"){ updateBudgetRow(item.id); updateBudgetSummary(); updateBudgetCharts(); }
+});
+
+document.addEventListener("change", function(e){
+  var el=e.target;
+  if(el.id==="importFile"){ handleImport(el); return; }
+  if(el.dataset.check!==undefined){ setDone(el.dataset.check, el.checked); return; }
+  if(el.dataset.preset!==undefined){
+    state.settings.presets[num(el.dataset.preset)] = num(el.value);
+    persist(); return;
+  }
+  if(el.dataset.setting){
+    var key=el.dataset.setting;
+    state.settings[key] = el.type==="checkbox" ? el.checked : (el.dataset.num ? num(el.value) : el.value);
+    persist();
+    if(key==="helpOn") render(); else renderChrome();
+    return;
+  }
+  var coll=el.dataset.coll; if(!coll) return;
+  var item=findItem(coll,el.dataset.id); if(!item) return;
+  var field=el.dataset.field;
+  if(el.tagName==="SELECT" || el.type==="checkbox"){
+    if(el.type==="checkbox") item[field]=el.checked;
+    else if(field==="plus") item[field]=el.value==="yes";
+    else item[field]=el.value;
+    persist(); render();
+    return;
+  }
+  item[field] = el.dataset.num ? num(el.value) : el.value;
+  persist();
+});
+
+/* ---------- chart tooltips (hover and keyboard focus show the same thing) ---------- */
+var tipEl=document.getElementById("tip");
+function placeTip(x,y){
+  var w=tipEl.offsetWidth, h=tipEl.offsetHeight;
+  var left=Math.min(x+14, window.innerWidth-w-8), top=y-h-12;
+  if(top<8) top=y+18;
+  tipEl.style.left=Math.max(8,left)+"px"; tipEl.style.top=top+"px";
+}
+function showTip(el,x,y){
+  tipEl.innerHTML=el.getAttribute("data-tip");
+  tipEl.classList.add("on");
+  if(x==null){ var b=el.getBoundingClientRect(); x=b.left+b.width/2; y=b.top; }
+  placeTip(x,y);
+}
+function hideTip(){ tipEl.classList.remove("on"); }
+document.addEventListener("mouseover",function(e){
+  var el=e.target.closest && e.target.closest("[data-tip]");
+  if(el) showTip(el,e.clientX,e.clientY); else hideTip();
+});
+document.addEventListener("mousemove",function(e){
+  if(tipEl.classList.contains("on") && e.target.closest && e.target.closest("[data-tip]")) placeTip(e.clientX,e.clientY);
+});
+document.addEventListener("focusin",function(e){
+  var el=e.target.closest && e.target.closest("[data-tip]");
+  if(el) showTip(el); else hideTip();
+});
+document.addEventListener("focusout",hideTip);
+window.addEventListener("scroll",hideTip,true);
+
+/* ---------- start ---------- */
+var state = DEMO ? exampleState() : load();
+var ui = {screen:"today", openHelp:null, highlight:null, filter:{guests:""}};
+render();
+
+})();
+</script>
+</body>
+</html>
